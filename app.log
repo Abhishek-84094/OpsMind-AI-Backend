@@ -1,0 +1,229 @@
+{"level":"info","message":"User registered: sushantdehri6@gmail.com, Role: admin"}
+{"level":"info","message":"User logged in: sushantdehri6@gmail.com, Role: admin"}
+{"level":"info","message":"User logged in: sushantdehri6@gmail.com, Role: admin"}
+{"level":"info","message":"Starting document upload: OpsMind_AI_Advanced_Enterprise_KB.pdf"}
+{"level":"info","message":"Document created: 69b448a0bf8d850e8a71f5fc, Pages: 8"}
+{"level":"info","message":"Document processed successfully: 69b448a0bf8d850e8a71f5fc, Chunks: 3"}
+{"level":"info","message":"User registered: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"User logged in: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"Starting document upload: OpsMind_AI_Advanced_Enterprise_KB.pdf"}
+{"level":"info","message":"Document created: 69b44b78e17edba6f8d64a3c, Pages: 8"}
+{"level":"info","message":"Document processed successfully: 69b44b78e17edba6f8d64a3c, Chunks: 3"}
+{"level":"info","message":"Query received: \"How many days does HR have to acknowledge a grievance?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Searching in 1 documents..."}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.6): 0 results"}
+{"level":"info","message":"No relevant documents found for query: \"How many days does HR have to acknowledge a grievance?\""}
+{"level":"info","message":"Starting document upload: OpsMind_AI_Advanced_Enterprise_KB (1).pdf"}
+{"level":"info","message":"Document created: 69b44be5e17edba6f8d64a4b, Pages: 8"}
+{"level":"info","message":"Document processed successfully: 69b44be5e17edba6f8d64a4b, Chunks: 3"}
+{"level":"info","message":"Query received: \"What rating is required for promotion eligibility?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Searching in 1 documents..."}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.6): 0 results"}
+{"level":"info","message":"No relevant documents found for query: \"What rating is required for promotion eligibility?\""}
+{"level":"info","message":"Starting document upload: OpsMind_AI_Test_Knowledge_Base.pdf"}
+{"level":"info","message":"Document created: 69b44d0ae17edba6f8d64a5a, Pages: 4"}
+{"level":"info","message":"Document processed successfully: 69b44d0ae17edba6f8d64a5a, Chunks: 4"}
+{"level":"info","message":"Query received: \"What rating is required for promotion eligibility?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Searching in 1 documents..."}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.6): 0 results"}
+{"level":"info","message":"No relevant documents found for query: \"What rating is required for promotion eligibility?\""}
+{"level":"info","message":"Query received: \"What rating is required for promotion eligibility?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 4 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 4 chunks..."}
+{"level":"error","message":"Vector search failed: PlanExecutor error during aggregation :: caused by :: limit should be less than or equal to numCandidates"}
+{"level":"info","message":"Falling back to simple chunk retrieval..."}
+{"level":"info","message":"Fallback returned 4 chunks"}
+{"level":"info","message":"After threshold filtering (0.4): 4 results"}
+{"level":"info","message":"Building context from 3 chunks"}
+{"level":"info","message":"Generating answer from LLM..."}
+{"level":"error","message":"LLM generation failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods."}
+{"level":"info","message":"Starting document upload: OpsMind_AI_Advanced_Enterprise_KB (2).pdf"}
+{"level":"info","message":"Document created: 69b44ed4a6eec836d0391293, Pages: 8"}
+{"level":"info","message":"Extracted text length: 1811 characters"}
+{"level":"info","message":"Created 3 chunks"}
+{"level":"info","message":"Generating embedding for chunk 1/3..."}
+{"level":"info","message":"Chunk 1 created with embedding: 69b44ed4a6eec836d0391295"}
+{"level":"info","message":"Generating embedding for chunk 2/3..."}
+{"level":"info","message":"Chunk 2 created with embedding: 69b44ed5a6eec836d0391297"}
+{"level":"info","message":"Generating embedding for chunk 3/3..."}
+{"level":"info","message":"Chunk 3 created with embedding: 69b44ed5a6eec836d0391299"}
+{"level":"info","message":"Document processed: 3 chunks with embeddings, 0 failed"}
+{"level":"info","message":"Query received: \"What is the approval limit that requires CFO approval?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 3 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 3 chunks..."}
+{"level":"error","message":"Vector search failed: PlanExecutor error during aggregation :: caused by :: limit should be less than or equal to numCandidates"}
+{"level":"info","message":"Falling back to simple chunk retrieval..."}
+{"level":"info","message":"Fallback returned 3 chunks"}
+{"level":"info","message":"After threshold filtering (0.4): 3 results"}
+{"level":"info","message":"Building context from 3 chunks"}
+{"level":"info","message":"Generating answer from LLM..."}
+{"level":"error","message":"LLM generation failed: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent: [404 Not Found] models/gemini-1.5-flash is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods."}
+{"level":"info","message":"Query received: \"What is the approval limit that requires CFO approval?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 3 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 3 chunks..."}
+{"level":"info","message":"Vector search params: numCandidates=3, limit=3"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.4): 0 results"}
+{"level":"warn","message":"No results above threshold. Using top results anyway..."}
+{"level":"info","message":"No relevant documents found for query: \"What is the approval limit that requires CFO approval?\""}
+{"level":"info","message":"Query received: \"What rating is required for promotion eligibility?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 7 chunks in selected documents"}
+{"level":"info","message":"Searching in 2 documents with 7 chunks..."}
+{"level":"info","message":"Vector search params: numCandidates=7, limit=7"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.4): 0 results"}
+{"level":"warn","message":"No results above threshold. Using top results anyway..."}
+{"level":"info","message":"No relevant documents found for query: \"What rating is required for promotion eligibility?\""}
+{"level":"info","message":"User logged in: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"Query received: \"What is the approval limit that requires CFO approval?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 3 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 3 chunks..."}
+{"level":"info","message":"Vector search params: numCandidates=3, limit=3"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.4): 0 results"}
+{"level":"warn","message":"No results above threshold. Using top results anyway..."}
+{"level":"info","message":"No relevant documents found for query: \"What is the approval limit that requires CFO approval?\""}
+{"level":"info","message":"User logged in: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"Starting document upload: OpsMind_AI_RAG_Test_Document_v2.pdf"}
+{"level":"info","message":"Document created: 69b4546bf9363dcaff2aa0c9, Pages: 6"}
+{"level":"info","message":"Extracted text length: 1768 characters"}
+{"level":"info","message":"Created 3 chunks"}
+{"level":"info","message":"Generating embedding for chunk 1/3..."}
+{"level":"info","message":"Chunk 1 created with embedding: 69b4546cf9363dcaff2aa0cb"}
+{"level":"info","message":"Generating embedding for chunk 2/3..."}
+{"level":"info","message":"Chunk 2 created with embedding: 69b4546cf9363dcaff2aa0cd"}
+{"level":"info","message":"Generating embedding for chunk 3/3..."}
+{"level":"info","message":"Chunk 3 created with embedding: 69b4546df9363dcaff2aa0cf"}
+{"level":"info","message":"Document processed: 3 chunks with embeddings, 0 failed"}
+{"level":"info","message":"Query received: \"How many paid annual leave days are employees entitled to?\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 3 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 3 chunks..."}
+{"level":"info","message":"Vector search params: numCandidates=3, limit=3"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.4): 0 results"}
+{"level":"warn","message":"No results above threshold. Using top results anyway..."}
+{"level":"info","message":"No relevant documents found for query: \"How many paid annual leave days are employees entitled to?\""}
+{"level":"info","message":"Starting document upload: upload.pdf"}
+{"level":"info","message":"Document created: 69b455d6f9363dcaff2aa0d9, Pages: 8"}
+{"level":"info","message":"Extracted text length: 6293 characters"}
+{"level":"info","message":"Created 10 chunks"}
+{"level":"info","message":"Generating embedding for chunk 1/10..."}
+{"level":"info","message":"Chunk 1 created with embedding: 69b455d7f9363dcaff2aa0db"}
+{"level":"info","message":"Generating embedding for chunk 2/10..."}
+{"level":"info","message":"Chunk 2 created with embedding: 69b455d7f9363dcaff2aa0dd"}
+{"level":"info","message":"Generating embedding for chunk 3/10..."}
+{"level":"info","message":"Chunk 3 created with embedding: 69b455d8f9363dcaff2aa0df"}
+{"level":"info","message":"Generating embedding for chunk 4/10..."}
+{"level":"info","message":"Chunk 4 created with embedding: 69b455d8f9363dcaff2aa0e1"}
+{"level":"info","message":"Generating embedding for chunk 5/10..."}
+{"level":"info","message":"Chunk 5 created with embedding: 69b455d9f9363dcaff2aa0e3"}
+{"level":"info","message":"Generating embedding for chunk 6/10..."}
+{"level":"info","message":"Chunk 6 created with embedding: 69b455d9f9363dcaff2aa0e5"}
+{"level":"info","message":"Generating embedding for chunk 7/10..."}
+{"level":"info","message":"Chunk 7 created with embedding: 69b455daf9363dcaff2aa0e7"}
+{"level":"info","message":"Generating embedding for chunk 8/10..."}
+{"level":"info","message":"Chunk 8 created with embedding: 69b455daf9363dcaff2aa0e9"}
+{"level":"info","message":"Generating embedding for chunk 9/10..."}
+{"level":"info","message":"Chunk 9 created with embedding: 69b455daf9363dcaff2aa0eb"}
+{"level":"info","message":"Generating embedding for chunk 10/10..."}
+{"level":"info","message":"Chunk 10 created with embedding: 69b455dbf9363dcaff2aa0ed"}
+{"level":"info","message":"Document processed: 10 chunks with embeddings, 0 failed"}
+{"level":"info","message":"Query received: \"Annual leave entitlement\" from user: 69b44905bf8d850e8a71f609"}
+{"level":"info","message":"Generating embedding for question..."}
+{"level":"info","message":"Embedding generated with 384 dimensions"}
+{"level":"info","message":"Found 10 chunks in selected documents"}
+{"level":"info","message":"Searching in 1 documents with 10 chunks..."}
+{"level":"info","message":"Vector search params: numCandidates=10, limit=10"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"After threshold filtering (0.4): 0 results"}
+{"level":"warn","message":"No results above threshold. Using top results anyway..."}
+{"level":"info","message":"No relevant documents found for query: \"Annual leave entitlement\""}
+{"level":"info","message":"User logged in: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"Query: \"Annual leave entitlement\""}
+{"level":"info","message":"Embedding generated: 384 dimensions"}
+{"level":"info","message":"Found 10 chunks"}
+{"level":"info","message":"Vector search: candidates=10, limit=10"}
+{"level":"info","message":"Vector search returned 0 results"}
+{"level":"info","message":"Query: \"Annual leave entitlement\""}
+{"level":"info","message":"Found 10 chunks"}
+{"level":"info","message":"Keywords: annual, leave, entitlement"}
+{"level":"info","message":"Relevant chunks: 5"}
+{"level":"info","message":"Context built from 5 chunks"}
+{"level":"info","message":"Generating answer..."}
+{"level":"info","message":"Initializing Gemini model for streaming..."}
+{"level":"info","message":"Initializing Gemini model..."}
+{"level":"info","message":"Sending prompt to Gemini..."}
+{"level":"error","message":"Gemini Error:"}
+{"level":"error","message":"Gemini Stream Error:"}
+{"level":"error","message":"LLM error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent: [404 Not Found] models/gemini-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods."}
+{"level":"info","message":"User logged in: hariom@gmail.com, Role: employee"}
+{"level":"info","message":"Starting document upload: upload.pdf"}
+{"level":"info","message":"Document created: 69b45bc7290b38501d68bc44, Pages: 8"}
+{"level":"info","message":"Extracted text length: 6293 characters"}
+{"level":"info","message":"Created 16 chunks from PDF"}
+{"level":"info","message":"Processing chunk 1/16..."}
+{"level":"info","message":"✓ Chunk 1 created with embedding"}
+{"level":"info","message":"Processing chunk 2/16..."}
+{"level":"info","message":"✓ Chunk 2 created with embedding"}
+{"level":"info","message":"Processing chunk 3/16..."}
+{"level":"info","message":"✓ Chunk 3 created with embedding"}
+{"level":"info","message":"Processing chunk 4/16..."}
+{"level":"info","message":"✓ Chunk 4 created with embedding"}
+{"level":"info","message":"Processing chunk 5/16..."}
+{"level":"info","message":"✓ Chunk 5 created with embedding"}
+{"level":"info","message":"Processing chunk 6/16..."}
+{"level":"info","message":"✓ Chunk 6 created with embedding"}
+{"level":"info","message":"Processing chunk 7/16..."}
+{"level":"info","message":"✓ Chunk 7 created with embedding"}
+{"level":"info","message":"Processing chunk 8/16..."}
+{"level":"info","message":"✓ Chunk 8 created with embedding"}
+{"level":"info","message":"Processing chunk 9/16..."}
+{"level":"info","message":"✓ Chunk 9 created with embedding"}
+{"level":"info","message":"Processing chunk 10/16..."}
+{"level":"info","message":"✓ Chunk 10 created with embedding"}
+{"level":"info","message":"Processing chunk 11/16..."}
+{"level":"info","message":"✓ Chunk 11 created with embedding"}
+{"level":"info","message":"Processing chunk 12/16..."}
+{"level":"info","message":"✓ Chunk 12 created with embedding"}
+{"level":"info","message":"Processing chunk 13/16..."}
+{"level":"info","message":"✓ Chunk 13 created with embedding"}
+{"level":"info","message":"Processing chunk 14/16..."}
+{"level":"info","message":"✓ Chunk 14 created with embedding"}
+{"level":"info","message":"Processing chunk 15/16..."}
+{"level":"info","message":"✓ Chunk 15 created with embedding"}
+{"level":"info","message":"Processing chunk 16/16..."}
+{"level":"info","message":"✓ Chunk 16 created with embedding"}
+{"level":"info","message":"✓ Document processed: 16 chunks with embeddings, 0 failed"}
+{"level":"info","message":"Query: \"Annual leave entitlement\""}
+{"level":"info","message":"Found 16 chunks"}
+{"level":"info","message":"Keywords: annual, leave, entitlement"}
+{"level":"info","message":"Relevant chunks: 6"}
+{"level":"info","message":"Context built from 5 chunks"}
+{"level":"info","message":"Generating answer..."}
+{"level":"info","message":"Initializing Gemini model for streaming..."}
+{"level":"info","message":"Initializing Gemini model..."}
+{"level":"info","message":"Sending prompt to Gemini..."}
+{"level":"error","message":"Gemini Error:"}
+{"level":"error","message":"Gemini Stream Error:"}
+{"level":"error","message":"LLM error: [GoogleGenerativeAI Error]: Error fetching from https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent: [404 Not Found] models/gemini-1.5-pro is not found for API version v1beta, or is not supported for generateContent. Call ListModels to see the list of available models and their supported methods."}
