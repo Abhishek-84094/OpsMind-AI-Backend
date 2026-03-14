@@ -1,5 +1,3 @@
-const { GoogleGenerativeAI } = require("@google/generative-ai");
-
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-
-module.exports = genAI;
+// DEPRECATED: This file is no longer used
+// OpenAI is now the LLM provider
+// See services/llmService.js for current implementation

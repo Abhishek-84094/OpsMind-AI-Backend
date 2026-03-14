@@ -1,24 +1,15 @@
 const Chunk = require("../models/Chunk");
 const QueryLog = require("../models/QueryLog");
-const Document = require("../models/Document");
-const { generateEmbedding } = require("../services/embeddingService");
-const { generateAnswerStream } = require("../services/llmService");
-const { getRedisClient } = require("../config/redis");
+const { generateAnswer } = require("../services/llmService");
 const logger = require("../utils/logger");
 
-const redis = getRedisClient();
-
-// ================= KEYWORD SEARCH FUNCTION =================
+// ================= KEYWORD SEARCH =================
 function keywordSearch(question, chunks) {
-  // Extract keywords from question
   const keywords = question
     .toLowerCase()
     .split(/\s+/)
-    .filter(word => word.length > 2); // Only words > 2 chars
+    .filter(word => word.length > 2);
 
-  logger.info(`Keywords: ${keywords.join(", ")}`);
-
-  // Score each chunk
   const scored = chunks.map(chunk => {
     const chunkText = chunk.text.toLowerCase();
     let score = 0;
@@ -31,7 +22,6 @@ function keywordSearch(question, chunks) {
       }
     });
 
-    // Bonus for consecutive keywords
     const keywordPhrase = keywords.join(" ");
     if (chunkText.includes(keywordPhrase)) {
       score += 5;
@@ -44,7 +34,6 @@ function keywordSearch(question, chunks) {
     };
   });
 
-  // Sort by score
   return scored.sort((a, b) => b.score - a.score);
 }
 
@@ -72,13 +61,10 @@ exports.askQuestion = async (req, res) => {
       });
     }
 
-    // Build document filter
-    let docFilter = { documentId: { $in: documentIds } };
-
-    // Get all chunks from selected documents
+    // Fetch chunks
     let allChunks = [];
     try {
-      allChunks = await Chunk.find(docFilter)
+      allChunks = await Chunk.find({ documentId: { $in: documentIds } })
         .select("text pageNumber documentId documentFilename")
         .lean();
 
@@ -98,80 +84,82 @@ exports.askQuestion = async (req, res) => {
       });
     }
 
-    // Keyword search
+    // Search for relevant chunks
     const scoredChunks = keywordSearch(question, allChunks);
-    
-    // Filter chunks with score > 0
     const relevantChunks = scoredChunks.filter(c => c.score > 0);
     
     logger.info(`Relevant chunks: ${relevantChunks.length}`);
 
-    let topChunks = relevantChunks.slice(0, 5);
-
-    // If no relevant chunks, use top chunks anyway
-    if (topChunks.length === 0) {
-      logger.warn("No relevant chunks found, using top chunks");
-      topChunks = scoredChunks.slice(0, 3);
-      
-      if (topChunks.length === 0) {
-        return res.json({
-          success: true,
-          question,
-          answer: "I don't know based on the available documents. Please upload documents related to your question or rephrase your question.",
-          sources: [],
-          confidence: 0,
-          responseTime: Date.now() - startTime
-        });
-      }
-    }
-
-    // Build context
-    const context = topChunks
-      .map((chunk, index) =>
-        `[${index + 1}] (${chunk.documentFilename}, Page ${chunk.pageNumber}): ${chunk.text}`
-      )
-      .join("\n\n");
-
-    logger.info(`Context built from ${topChunks.length} chunks`);
-
-    const prompt = `You are a helpful assistant. Answer the question using ONLY the provided context. If you cannot find the answer in the context, say "I don't know based on the available documents."
-
-Context:
-${context}
-
-Question: ${question}
-
-Answer:`;
-
-    // Generate answer
-    let answer;
-    try {
-      logger.info("Generating answer...");
-      answer = await generateAnswerStream(prompt);
-      logger.info("✓ Answer generated");
-    } catch (err) {
-      logger.error(`LLM error: ${err.message}`);
-      return res.status(500).json({
-        success: false,
-        message: "Failed to generate answer. Check your Gemini API key."
+    if (relevantChunks.length === 0) {
+      return res.json({
+        success: true,
+        question,
+        answer: "I don't know. This information is not available in the indexed documents.",
+        sources: [],
+        responseTime: Date.now() - startTime
       });
     }
 
-    // Calculate confidence based on matched keywords
-    const avgScore = topChunks.reduce((sum, c) => sum + (c.score || 0), 0) / topChunks.length;
-    const confidence = Math.min(avgScore * 100, 100);
+    // Get top 3 chunks
+    const topChunks = relevantChunks.slice(0, 3);
+    
+    // Build context
+    const context = topChunks
+      .map(chunk => `${chunk.documentFilename} (Page ${chunk.pageNumber}):\n${chunk.text}`)
+      .join("\n\n---\n\n");
+
+    logger.info(`Context built from ${topChunks.length} chunks`);
+
+    // Create prompt
+    const prompt = `You are a corporate knowledge assistant. Answer the question using ONLY the provided context.
+
+RULES:
+1. Answer ONLY from the context provided
+2. Give ONE sentence answer maximum
+3. Be direct and concise
+4. If answer not found, say: "I don't know. This information is not available in the indexed documents."
+
+CONTEXT:
+${context}
+
+QUESTION: ${question}
+
+ANSWER:`;
+
+    // Call Groq
+    let answer;
+    try {
+      logger.info("Calling Groq API...");
+      answer = await generateAnswer(prompt);
+      logger.info("✓ Answer received from Groq");
+      
+      answer = answer.trim();
+      
+      // Get first sentence only
+      const firstSentence = answer.split(/[.!?]/)[0];
+      if (firstSentence) {
+        answer = firstSentence.trim() + ".";
+      }
+      
+    } catch (err) {
+      logger.error(`Groq error: ${err.message}`);
+      return res.status(500).json({
+        success: false,
+        message: "Failed to generate answer. Check your Groq API key."
+      });
+    }
+
+    const topChunk = topChunks[0];
 
     const response = {
       success: true,
       question,
       answer,
-      sources: topChunks.map(r => ({
-        documentId: r.documentId,
-        documentFilename: r.documentFilename,
-        pageNumber: r.pageNumber,
-        similarityScore: parseFloat((r.score || 0).toFixed(3))
-      })),
-      confidence: parseFloat(confidence.toFixed(2)),
+      sources: [{
+        documentId: topChunk.documentId,
+        documentFilename: topChunk.documentFilename,
+        pageNumber: topChunk.pageNumber
+      }],
       responseTime: Date.now() - startTime
     };
 
@@ -181,9 +169,7 @@ Answer:`;
         question,
         answer,
         userId,
-        sources: topChunks.map(r => r.documentId),
-        similarityScores: topChunks.map(r => r.score || 0),
-        confidence,
+        sources: [topChunk.documentId],
         responseTime: response.responseTime,
         status: "success"
       });
@@ -191,7 +177,7 @@ Answer:`;
       logger.warn(`Failed to log query: ${err.message}`);
     }
 
-    logger.info(`✓ Query completed: ${confidence}% confidence`);
+    logger.info(`✓ Query completed in ${response.responseTime}ms`);
     res.json(response);
 
   } catch (error) {
@@ -207,7 +193,6 @@ Answer:`;
 exports.askQuestionStream = async (req, res) => {
   try {
     const { question, documentIds } = req.body;
-    const userId = req.user?._id;
 
     if (!question || question.trim() === "") {
       return res.status(400).json({
@@ -223,11 +208,10 @@ exports.askQuestionStream = async (req, res) => {
       });
     }
 
-    let docFilter = { documentId: { $in: documentIds } };
-
+    // Fetch chunks
     let allChunks = [];
     try {
-      allChunks = await Chunk.find(docFilter)
+      allChunks = await Chunk.find({ documentId: { $in: documentIds } })
         .select("text pageNumber documentId documentFilename")
         .lean();
     } catch (err) {
@@ -248,72 +232,77 @@ exports.askQuestionStream = async (req, res) => {
       return res.end();
     }
 
-    // Keyword search
+    // Search for relevant chunks
     const scoredChunks = keywordSearch(question, allChunks);
     const relevantChunks = scoredChunks.filter(c => c.score > 0);
-    
-    let topChunks = relevantChunks.length > 0 
-      ? relevantChunks.slice(0, 5)
-      : scoredChunks.slice(0, 3);
 
-    if (!topChunks.length) {
+    if (relevantChunks.length === 0) {
       res.setHeader("Content-Type", "text/event-stream");
       res.setHeader("Cache-Control", "no-cache");
       res.setHeader("Connection", "keep-alive");
-      res.write(`data: ${JSON.stringify({ text: "I don't know based on the available documents." })}\n\n`);
+      res.write(`data: ${JSON.stringify({ text: "I don't know. This information is not available in the indexed documents." })}\n\n`);
       res.write(`data: ${JSON.stringify({ done: true })}\n\n`);
       return res.end();
     }
 
+    // Get top 3 chunks
+    const topChunks = relevantChunks.slice(0, 3);
+    
+    // Build context
     const context = topChunks
-      .map((chunk, index) =>
-        `[${index + 1}] (${chunk.documentFilename}, Page ${chunk.pageNumber}): ${chunk.text}`
-      )
-      .join("\n\n");
+      .map(chunk => `${chunk.documentFilename} (Page ${chunk.pageNumber}):\n${chunk.text}`)
+      .join("\n\n---\n\n");
 
-    const prompt = `You are a helpful assistant. Answer the question using ONLY the provided context. If you cannot find the answer, say "I don't know based on the available documents."
+    // Create prompt
+    const prompt = `You are a corporate knowledge assistant. Answer the question using ONLY the provided context.
 
-Context:
+RULES:
+1. Answer ONLY from the context provided
+2. Give ONE sentence answer maximum
+3. Be direct and concise
+4. If answer not found, say: "I don't know. This information is not available in the indexed documents."
+
+CONTEXT:
 ${context}
 
-Question: ${question}
+QUESTION: ${question}
 
-Answer:`;
+ANSWER:`;
 
     res.setHeader("Content-Type", "text/event-stream");
     res.setHeader("Cache-Control", "no-cache");
     res.setHeader("Connection", "keep-alive");
 
     try {
-      const stream = await generateAnswerStream(prompt, true);
+      logger.info("Calling Groq API for streaming...");
+      const answer = await generateAnswer(prompt);
+      
+      // Stream answer word by word
+      const words = answer.split(" ");
+      let index = 0;
 
-      stream.on("data", (chunk) => {
-        res.write(`data: ${JSON.stringify({ text: chunk })}\n\n`);
-      });
+      const streamWords = () => {
+        if (index < words.length) {
+          res.write(`data: ${JSON.stringify({ text: words[index] + " " })}\n\n`);
+          index++;
+          setTimeout(streamWords, 30);
+        } else {
+          const topChunk = topChunks[0];
+          res.write(`data: ${JSON.stringify({ 
+            done: true,
+            sources: [{
+              documentFilename: topChunk.documentFilename,
+              pageNumber: topChunk.pageNumber
+            }]
+          })}\n\n`);
+          res.end();
+        }
+      };
 
-      stream.on("end", () => {
-        const avgScore = topChunks.reduce((sum, c) => sum + (c.score || 0), 0) / topChunks.length;
-        const confidence = Math.min(avgScore * 100, 100);
-        
-        res.write(`data: ${JSON.stringify({ 
-          done: true,
-          sources: topChunks.map(r => ({
-            documentFilename: r.documentFilename,
-            pageNumber: r.pageNumber,
-            similarityScore: parseFloat((r.score || 0).toFixed(3))
-          })),
-          confidence: parseFloat(confidence.toFixed(2))
-        })}\n\n`);
-        res.end();
-      });
+      streamWords();
 
-      stream.on("error", (error) => {
-        logger.error(`Stream error: ${error.message}`);
-        res.write(`data: ${JSON.stringify({ error: "Failed to generate answer" })}\n\n`);
-        res.end();
-      });
     } catch (err) {
-      logger.error(`LLM stream failed: ${err.message}`);
+      logger.error(`OpenAI stream error: ${err.message}`);
       res.write(`data: ${JSON.stringify({ error: "Failed to generate answer" })}\n\n`);
       res.end();
     }

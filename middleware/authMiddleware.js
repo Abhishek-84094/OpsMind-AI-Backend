@@ -35,6 +35,17 @@ exports.protect = async (req, res, next) => {
       });
     }
 
+    // Ensure permissions object exists
+    if (!user.permissions) {
+      user.permissions = {
+        canUpload: true,
+        canQuery: true,
+        canViewAnalytics: false,
+        canManageUsers: false,
+        canDeleteDocuments: false,
+      };
+    }
+
     // Attach user to request
     req.user = user;
 

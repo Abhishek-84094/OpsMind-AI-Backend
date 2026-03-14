@@ -11,57 +11,76 @@ let server;
 
 const startServer = async () => {
   try {
-    // Connect MongoDB
-    await connectDB();
+    // Debug: Check Environment Variables
+    console.log("🔐 GROQ KEY:", process.env.GROQ_API_KEY ? "SET" : "NOT SET");
+    console.log("📦 MONGO URI:", process.env.MONGO_URI ? "SET" : "NOT SET");
+    console.log("📡 REDIS URL:", process.env.REDIS_URL ? "SET" : "NOT SET");
 
-    // Connect Redis
-    try {
-      await connectRedis();
-    } catch (err) {
-      console.warn("⚠️ Redis not available, continuing without cache");
+    // Check if Groq API key is set
+    if (!process.env.GROQ_API_KEY) {
+      throw new Error("GROQ_API_KEY is not set in environment variables");
     }
 
-    // Initialize Queue
+    // 1️⃣ Connect MongoDB
+    await connectDB();
+    console.log("✅ MongoDB Connected");
+
+    // 2️⃣ Connect Redis (Optional)
+    try {
+      await connectRedis();
+      console.log("✅ Redis Connected");
+    } catch (err) {
+      console.warn("⚠️ Redis not available — skipping cache");
+    }
+
+    // 3️⃣ Initialize Queue (Optional)
     try {
       await initializeQueue();
+      console.log("✅ Queue Initialized");
     } catch (err) {
       console.warn("⚠️ Queue initialization failed:", err.message);
     }
 
-    // Start Worker
+    // 4️⃣ Start Worker (Optional)
     try {
       await startWorker();
+      console.log("✅ Worker Started");
     } catch (err) {
       console.warn("⚠️ Worker startup failed:", err.message);
     }
 
-    // Start Express server
+    // 5️⃣ Start Express Server
     server = app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
+
   } catch (error) {
-    console.error("❌ Server startup failed:", error);
+    console.error("❌ Server startup failed:", error.message);
     process.exit(1);
   }
 };
 
-// Graceful shutdown
-process.on("SIGTERM", async () => {
-  console.log("🚫 SIGTERM received, shutting down gracefully...");
-  await stopWorker();
-  server.close(() => {
-    console.log("🚫 Server closed");
-    process.exit(0);
-  });
-});
+// Graceful Shutdown
+const shutdown = async () => {
+  console.log("🛑 Shutting down gracefully...");
+  try {
+    await stopWorker();
+  } catch (err) {
+    console.warn("⚠️ Worker shutdown error:", err.message);
+  }
 
-process.on("SIGINT", async () => {
-  console.log("🚫 SIGINT received, shutting down gracefully...");
-  await stopWorker();
-  server.close(() => {
-    console.log("🚫 Server closed");
+  if (server) {
+    server.close(() => {
+      console.log("🚫 Server closed");
+      process.exit(0);
+    });
+  } else {
     process.exit(0);
-  });
-});
+  }
+};
 
+process.on("SIGTERM", shutdown);
+process.on("SIGINT", shutdown);
+
+// Start Application
 startServer();

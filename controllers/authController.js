@@ -24,11 +24,9 @@ exports.registerUser = async (req, res, next) => {
       });
     }
 
-    // Validate role
     const validRoles = ["employee", "viewer", "admin"];
     const userRole = validRoles.includes(role) ? role : "employee";
 
-    // Set permissions based on role
     let permissions = {};
     switch (userRole) {
       case "admin":
@@ -175,6 +173,129 @@ exports.getCurrentUser = async (req, res, next) => {
     });
   } catch (error) {
     logger.error(`Get current user error: ${error.message}`);
+    next(error);
+  }
+};
+
+// ================= FORGOT PASSWORD =================
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    const resetToken = user.generateResetToken();
+    await user.save();
+
+    logger.info(`Password reset requested for: ${email}`);
+    logger.info(`Reset token: ${resetToken} (expires at ${user.resetTokenExpiry})`);
+
+    res.status(200).json({
+      success: true,
+      message: "Reset code generated. Check backend console for code.",
+      data: {
+        resetToken: resetToken,
+      },
+    });
+  } catch (error) {
+    logger.error(`Forgot password error: ${error.message}`);
+    next(error);
+  }
+};
+
+// ================= RESET PASSWORD =================
+exports.resetPassword = async (req, res, next) => {
+  try {
+    const { email, code, newPassword } = req.body;
+
+    if (!email || !code || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, code, and new password are required",
+      });
+    }
+
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Password must be at least 6 characters",
+      });
+    }
+
+    const user = await User.findOne({ email }).select("+password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (!user.resetToken) {
+      return res.status(400).json({
+        success: false,
+        message: "No reset request found. Please request a new reset code.",
+      });
+    }
+
+    if (user.resetToken !== code) {
+      logger.warn(`Invalid reset code attempt for: ${email}`);
+      return res.status(400).json({
+        success: false,
+        message: "Invalid reset code",
+      });
+    }
+
+    if (new Date() > user.resetTokenExpiry) {
+      logger.warn(`Expired reset code attempt for: ${email}`);
+      return res.status(400).json({
+        success: false,
+        message: "Reset code has expired. Please request a new one.",
+      });
+    }
+
+    user.password = newPassword;
+    user.resetToken = null;
+    user.resetTokenExpiry = null;
+    await user.save();
+
+    logger.info(`Password reset successfully for: ${email}`);
+
+    res.status(200).json({
+      success: true,
+      message: "Password reset successfully! You can now login with your new password.",
+    });
+  } catch (error) {
+    logger.error(`Reset password error: ${error.message}`);
+    next(error);
+  }
+};
+
+// ================= GET ALL REGISTERED EMAILS =================
+exports.getRegisteredEmails = async (req, res, next) => {
+  try {
+    const emails = await User.find({}, { email: 1, name: 1 }).select("email name");
+
+    res.status(200).json({
+      success: true,
+      data: emails,
+    });
+  } catch (error) {
+    logger.error(`Get emails error: ${error.message}`);
     next(error);
   }
 };
