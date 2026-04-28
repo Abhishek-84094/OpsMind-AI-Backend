@@ -15,7 +15,7 @@ exports.getStats = async (req, res) => {
   }
 };
 
-// ================= DASHBOARD OVERVIEW =================
+// ================= DASHBOARD OVERVIEW ==================
 exports.getDashboardOverview = async (req, res) => {
   try {
     const [totalUsers, totalDocuments, totalQueries, totalChunks, activeUsers, recentQueries] = await Promise.all([
